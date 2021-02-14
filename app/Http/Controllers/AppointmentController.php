@@ -27,10 +27,8 @@ class AppointmentController extends Controller
 
         $validator = Validator::make(
             $request->all(), [
-                'user' => 'unique:appointments',
+                'user' => 'unique:appointments|numeric',
             ]);
-
-        
 
         if (!$validator->fails()) {
             $app = Appointment::find($id);
@@ -74,6 +72,8 @@ class AppointmentController extends Controller
     }
 
     public function getFiltered(Request $request) {
+    
+        // return response()->json($request->date, 200);
 
         $appointments = Appointment::where('date',$request->date)
                         ->where('available','!=',0)
@@ -87,14 +87,25 @@ class AppointmentController extends Controller
 
     public function getAssigned(Request $request) {
 
-        $appointments = Appointment::where('date',$request->date)
+        if ($request->date != null){
+            $appointments = Appointment::where('date',$request->date)
                         ->where('available','=',0)
                         ->orderBy('sede_id','asc')
                         ->orderBy('date','asc')
                         ->orderBy('start_time','asc')
                         ->get();
         
-        return response()->json($appointments, 200);
+            return response()->json($appointments, 200);
+        } else {
+            $appointments = Appointment::where('available','=',0)
+                        ->orderBy('sede_id','asc')
+                        ->orderBy('date','asc')
+                        ->orderBy('start_time','asc')
+                        ->get();
+        
+            return response()->json($appointments, 200);
+        }
+        
     }
 
 }
