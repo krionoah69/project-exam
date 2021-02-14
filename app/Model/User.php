@@ -1,7 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Model;
 
+use App\Model\Role;
+use App\Model\Appointment;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -36,4 +38,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    /**
+     *  Generate relation many-to-many User and Role
+     * 
+     */
+    public function roles() {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function appointments() {
+        return $this->hasMany(Appointment::class);
+    }
+
 }
